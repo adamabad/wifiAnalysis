@@ -6,29 +6,31 @@
              mc:Ignorable="d"
              x:Class="wifiAnalysis.MainPage"
              BackgroundImageSource="bg.jpg">
-    <StackLayout Padding="50" VerticalOptions="CenterAndExpand">
-        <Label Text="WiFi Analysis" 
-           Padding="10"  
-           HorizontalOptions="CenterAndExpand"
-           FontFamily="Fantasy"
-           FontSize="Title"
-           FontAttributes="Bold"
-           TextColor="White"/>
-        <Button Text="Start new Scan" 
-            BackgroundColor="LightBlue" 
-            TextColor="White" 
-            BorderColor="Black" 
-            BorderWidth="2" 
-            HorizontalOptions="CenterAndExpand" 
-            VerticalOptions="Center" 
-            Clicked="StartButton_OnClicked"/>
-        <Button Text="View Previous Scans"
-            BackgroundColor="LightBlue" 
-            TextColor="White" 
-            BorderColor="Black" 
-            BorderWidth="2" 
-            HorizontalOptions="CenterAndExpand" 
-            VerticalOptions="Center" 
-            Clicked="PreviousButton_OnClicked"/>
-    </StackLayout>
+    <ContentPage.Content>
+        <StackLayout Padding="50" VerticalOptions="CenterAndExpand">
+            <Label Text="WiFi Analysis" 
+               Padding="10"  
+               HorizontalOptions="CenterAndExpand"
+               FontFamily="Fantasy"
+               FontSize="Title"
+               FontAttributes="Bold"
+               TextColor="White"/>
+            <Button Text="Start new Scan" 
+                BackgroundColor="LightBlue" 
+                TextColor="White" 
+                BorderColor="Black" 
+                BorderWidth="2" 
+                HorizontalOptions="CenterAndExpand" 
+                VerticalOptions="Center" 
+                Clicked="StartButton_OnClicked"/>
+            <Button Text="View Previous Scans"
+                BackgroundColor="LightBlue" 
+                TextColor="White" 
+                BorderColor="Black" 
+                BorderWidth="2" 
+                HorizontalOptions="CenterAndExpand" 
+                VerticalOptions="Center" 
+                Clicked="PreviousButton_OnClicked"/>
+        </StackLayout>
+    </ContentPage.Content>
 </ContentPage>
