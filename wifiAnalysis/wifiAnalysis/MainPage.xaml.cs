@@ -17,5 +17,15 @@ namespace wifiAnalysis
         {
             InitializeComponent();
         }
+        private async void StartButton_OnClicked(object sender, EventArgs e) 
+        {
+            await Navigation.PushAsync(new ScanPage());
+        }
+
+        private async void PreviousButton_OnClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new PreviousPage());
+        }
     }
+
 }
