@@ -133,4 +133,7 @@
       <Name>wifiAnalysis</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\background.jpg" />
+  </ItemGroup>
 </Project>

@@ -4,13 +4,31 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="wifiAnalysis.MainPage">
-
+             x:Class="wifiAnalysis.MainPage"
+             BackgroundImageSource="bg.jpg">
     <StackLayout>
-        <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
+        <Label Text="WiFi Analysis" 
+           Padding="10"  
+           HorizontalOptions="CenterAndExpand"
+           FontFamily="Fantasy"
+           FontSize="Title"
+           FontAttributes="Bold"
+           TextColor="White"/>
+        <Button Text="Start new Scan" 
+            BackgroundColor="LightBlue" 
+            TextColor="White" 
+            BorderColor="Black" 
+            BorderWidth="2" 
+            HorizontalOptions="CenterAndExpand" 
+            VerticalOptions="Center" 
+            Padding="10"/>
+        <Button Text="View Previous Scans" 
+            BackgroundColor="LightBlue" 
+            TextColor="White" 
+            BorderColor="Black" 
+            BorderWidth="2" 
+            HorizontalOptions="CenterAndExpand" 
+            VerticalOptions="Center" 
+            Padding="10"/>
     </StackLayout>
-
 </ContentPage>
