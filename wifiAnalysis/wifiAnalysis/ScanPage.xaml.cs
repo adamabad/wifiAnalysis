@@ -16,5 +16,11 @@ namespace wifiAnalysis
         {
             InitializeComponent();
         }
+        private async void ScanButton_OnClicked(object sender, EventArgs e)
+        {
+            var picker = (Picker)sender;
+            int selectedIndex = picker.SelectedIndex;
+            await Navigation.PushAsync(new ScanProgressPage());
+        }
     }
 }

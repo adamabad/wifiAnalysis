@@ -7,10 +7,32 @@
              x:Class="wifiAnalysis.ScanPage"
              BackgroundImageSource="bg.jpg">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+        <StackLayout Padding="20" VerticalOptions="CenterAndExpand">
+            <Label Text="Start a new Scan" 
+               Padding="10"  
+               HorizontalOptions="FillAndExpand" 
+               FontFamily="Fantasy"
+               FontSize="Title"
+               FontAttributes="Bold"
+               TextColor="White"/>
+            <Button Text="Start Scan" 
+                BackgroundColor="LightBlue" 
+                TextColor="White" 
+                BorderColor="Black" 
+                BorderWidth="2" 
+                HorizontalOptions="FillAndExpand" 
+                VerticalOptions="Center"
+                Clicked="ScanButton_OnClicked"/>
+            <Picker x:Name="location" Title="Location" HorizontalOptions="FillAndExpand">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Office</x:String>
+                        <x:String>Living Room</x:String>
+                        <x:String>Kitchen</x:String>
+                        <x:String>Other</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

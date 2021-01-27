@@ -10,7 +10,7 @@
         <StackLayout Padding="50" VerticalOptions="CenterAndExpand">
             <Label Text="WiFi Analysis" 
                Padding="10"  
-               HorizontalOptions="CenterAndExpand"
+               HorizontalOptions="FillAndExpand"
                FontFamily="Fantasy"
                FontSize="Title"
                FontAttributes="Bold"
@@ -20,7 +20,7 @@
                 TextColor="White" 
                 BorderColor="Black" 
                 BorderWidth="2" 
-                HorizontalOptions="CenterAndExpand" 
+                HorizontalOptions="FillAndExpand" 
                 VerticalOptions="Center" 
                 Clicked="StartButton_OnClicked"/>
             <Button Text="View Previous Scans"
@@ -28,7 +28,7 @@
                 TextColor="White" 
                 BorderColor="Black" 
                 BorderWidth="2" 
-                HorizontalOptions="CenterAndExpand" 
+                HorizontalOptions="FillAndExpand" 
                 VerticalOptions="Center" 
                 Clicked="PreviousButton_OnClicked"/>
         </StackLayout>
