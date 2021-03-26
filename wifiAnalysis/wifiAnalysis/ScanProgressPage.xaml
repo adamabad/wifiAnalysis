@@ -6,10 +6,28 @@
              mc:Ignorable="d"
              x:Class="wifiAnalysis.ScanProgressPage">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+        <StackLayout Padding="20" VerticalOptions="CenterAndExpand">
+            <Label Text="Scan Progress Page" 
+               Padding="10"  
+               HorizontalOptions="FillAndExpand" 
+               FontFamily="Fantasy"
+               FontSize="Title"
+               FontAttributes="Bold"
+               TextColor="White"/>
+            <Label Text =" Current Signal Strength"
+               Padding="10"  
+               HorizontalOptions="FillAndExpand" 
+               FontFamily="Fantasy"
+               FontSize="Title"
+               FontAttributes="Bold"
+               TextColor="White"/>
+            <Label Text = "{Binding getLinkSpeed, StringFormat='{0} dB'}"
+               Padding="10"  
+               HorizontalOptions="FillAndExpand" 
+               FontFamily="Fantasy"
+               FontSize="Title"
+               FontAttributes="Bold"
+               TextColor="White"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
