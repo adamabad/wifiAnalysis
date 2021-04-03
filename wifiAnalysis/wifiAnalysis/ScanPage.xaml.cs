@@ -22,5 +22,6 @@ namespace wifiAnalysis
             int selectedIndex = picker.SelectedIndex;
             await Navigation.PushAsync(new ScanProgressPage());
         }
+        
     }
 }
