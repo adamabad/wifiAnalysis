@@ -31,6 +31,22 @@
                 HorizontalOptions="FillAndExpand" 
                 VerticalOptions="Center" 
                 Clicked="PreviousButton_OnClicked"/>
+            <Button Text="Go to Scan"
+                BackgroundColor="LightBlue" 
+                TextColor="White" 
+                BorderColor="Black" 
+                BorderWidth="2" 
+                HorizontalOptions="FillAndExpand" 
+                VerticalOptions="Center" 
+                Clicked="ScanButton_OnClicked"/>
+            <Button Text="WebView Demo"
+                BackgroundColor="LightBlue" 
+                TextColor="White" 
+                BorderColor="Black" 
+                BorderWidth="2" 
+                HorizontalOptions="FillAndExpand" 
+                VerticalOptions="Center" 
+                Clicked="WebView_OnClicked"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
