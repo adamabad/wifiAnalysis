@@ -27,33 +27,5 @@ namespace wifiAnalysis
         protected override void OnResume()
         {
         }
-        public bool Internetconnected()
-        {
-            return CrossConnectivity.Current.IsConnected;
-        }
-
-        public bool IsWifiConnected()
-        {
-            var profiles = Connectivity.ConnectionProfiles;
-            if (profiles.Contains(ConnectionProfile.WiFi))
-                return true;
-            else
-                return false;
-        }
-
-        public class ConnectivityTest
-        {
-            public ConnectivityTest()
-            {
-                Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
-
-            }
-
-            void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
-            {
-                var access = e.NetworkAccess;
-                var profiles = e.ConnectionProfiles;
-            }
-        }
     }
 }
