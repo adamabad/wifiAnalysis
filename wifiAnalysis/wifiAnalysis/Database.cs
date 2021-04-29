@@ -1,27 +1,34 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using SQLite;
+﻿using Dapper;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SQLite;
+using System.Linq;
 
 namespace wifiAnalysis
 {
     public class Database
     {
-        readonly SQLiteAsyncConnection _database;
-
-        public Database(string dbPath)
+        public static List<ScanObject> GetScanResults()
         {
-            _database = new SQLiteAsyncConnection(dbPath);
-            _database.CreateTableAsync<ScanResult>().Wait();
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<ScanObject>("", new DynamicParameters());
+                return output.ToList();
+            }
         }
 
-        public Task<List<ScanResult>> GetPeopleAsync()
+        public static void InsertRoom(string Name)
         {
-            return _database.Table<ScanResult>().ToListAsync();
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                cnn.Execute("insert into RoomTable (name) values (" + Name + ")");
+            }
         }
 
-        public Task<int> SavePersonAsync(ScanResult scanResult)
+        private static string LoadConnectionString(string id = "Default")
         {
-            return _database.InsertAsync(scanResult);
+            return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }
     }
 }
