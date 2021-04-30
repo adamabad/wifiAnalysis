@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="wifiAnalysis.ScanPage"
+             xmlns:local="clr-namespace:wifiAnalysis;assembly=wifiAnalysis"
              BackgroundImageSource="bg.jpg">
     <ContentPage.Content>
         <StackLayout Padding="20" VerticalOptions="CenterAndExpand">
@@ -23,16 +24,11 @@
                 HorizontalOptions="FillAndExpand" 
                 VerticalOptions="Center"
                 Clicked="ScanButton_OnClicked"/>
-            <Picker x:Name="location" Title="Select a Location" HorizontalOptions="FillAndExpand">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Office</x:String>
-                        <x:String>Living Room</x:String>
-                        <x:String>Kitchen</x:String>
-                        <x:String>Other</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
-            </Picker>
+            <Picker x:Name="RoomPicker" Title="Select a Location" HorizontalOptions="FillAndExpand">
+                <Picker.ItemDisplayBinding>
+                    <Binding Path="Room_Name"/>
+                </Picker.ItemDisplayBinding>
+            </Picker> 
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

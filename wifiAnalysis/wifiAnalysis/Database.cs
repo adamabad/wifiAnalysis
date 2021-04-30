@@ -1,50 +1,98 @@
-﻿using Dapper;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Data.SQLite;
-using System.Linq;
+﻿using System.Collections.Generic;
+using SQLite;
+using System.Threading.Tasks;
+using System.IO;
+using System;
+using System.Reflection;
 
 namespace wifiAnalysis
 {
     public class Database
     {
-        public static List<ScanObject> GetScanResults()
+        readonly SQLiteAsyncConnection database;
+
+        public Database()
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            string DatabasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ScanDatabase.db3");
+            //Assembly assembly = IntrospectionExtensions.GetTypeInfo(typeof(App)).Assembly;
+            //Stream embeddedDatabaseStream = assembly.GetManifestResourceStream("wifiAnalysis.ScanDatabse.db");
+            if (!File.Exists(DatabasePath))
             {
-                var output = cnn.Query<ScanObject>("SELECT * FROM ScanTable", new DynamicParameters());
-                return output.ToList();
+                RoomObject room;
+                database = new SQLiteAsyncConnection(DatabasePath);
+                database.CreateTableAsync<RoomObject>().Wait();
+                database.CreateTableAsync<ScanObject>().Wait();
+                room = new RoomObject
+                {
+                    Room_Name = "Living Room"
+                };
+                SaveRoomAsync(room);
+                room = new RoomObject
+                {
+                    Room_Name = "Kitchen"
+                };
+                SaveRoomAsync(room);
+            }
+            else
+            {
+                database = new SQLiteAsyncConnection(DatabasePath);
+                database.CreateTableAsync<RoomObject>().Wait();
+                database.CreateTableAsync<ScanObject>().Wait();
+
+            }
+        }
+        public Task<List<ScanObject>> GetScanResults()
+        { 
+            return database.Table<ScanObject>().ToListAsync();
+        }
+
+        public Task<ScanObject> GetScanResult(int id)
+        {
+            return database.Table<ScanObject>().Where(i => i.Scan_ID == id).FirstOrDefaultAsync();
+        }
+
+        public Task<int> SaveScanAsync(ScanObject scanObject)
+        {
+            if (scanObject.Scan_ID != 0)
+            {
+                return database.UpdateAsync(scanObject);
+            }
+            else
+            {
+                return database.InsertAsync(scanObject);
             }
         }
 
-        public static List<RoomObject> GetRooms()
+        public Task<int> DeleteScanAsync(ScanObject scanObject)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            return database.DeleteAsync(scanObject);
+        }
+
+        public Task<List<RoomObject>> GetRooms()
+        {
+            return database.Table<RoomObject>().ToListAsync();
+        }
+
+        public Task<RoomObject> GetRoom(int id)
+        {
+            return database.Table<RoomObject>().Where(i => i.Room_ID == id).FirstOrDefaultAsync();
+        }
+
+        public Task<int> SaveRoomAsync(RoomObject roomObject)
+        {
+            if (roomObject.Room_ID != 0)
             {
-                var output = cnn.Query<RoomObject>("SELECT * FROM RoomTable", new DynamicParameters());
-                return output.ToList();
+                return database.UpdateAsync(roomObject);
+            }
+            else
+            {
+                return database.InsertAsync(roomObject);
             }
         }
 
-        public static void InsertScan(ScanObject scan)
+        public Task<int> DeleteRoomAsync(RoomObject roomObject)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
-                cnn.Execute("INSERT into ScanTable (Ping, Jitter, Up, Down, Server, IP, HostName) VALUES (@Ping, @Jitter, @Up, @Down, @Server, @IP, @HostName)", scan);
-            }
-        }
-        public static void InsertRoom(string Name)
-        {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
-                cnn.Execute("INSERT into RoomTable (name) VALUES (\"" + Name + "\")");
-            }
-        }
-
-        private static string LoadConnectionString(string id = "Default")
-        {
-            return ConfigurationManager.ConnectionStrings[id].ConnectionString;
+            return database.DeleteAsync(roomObject);
         }
     }
 }

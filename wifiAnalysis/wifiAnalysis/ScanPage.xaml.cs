@@ -43,14 +43,15 @@ namespace wifiAnalysis
             }
         }
 
-        private  void PopulatePicker()
+        private async void PopulatePicker()
         {
-            Rooms = Database.GetRooms();
-            location.Items.Clear();
+            Rooms = await App.ScanDatabase.GetRooms();
+            RoomPicker.Items.Clear();
             foreach (RoomObject room in Rooms)
             {
-                location.Items.Add(room.Room_Name);
+                RoomPicker.Items.Add(room.Room_Name);
             }
+            RoomPicker.Items.Add("Other");
         }
     }
 }
