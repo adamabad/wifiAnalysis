@@ -23,7 +23,7 @@
                 HorizontalOptions="FillAndExpand" 
                 VerticalOptions="Center"
                 Clicked="ScanButton_OnClicked"/>
-            <Picker x:Name="location" Title="Location" HorizontalOptions="FillAndExpand">
+            <Picker x:Name="location" Title="Select a Location" HorizontalOptions="FillAndExpand">
                 <Picker.ItemsSource>
                     <x:Array Type="{x:Type x:String}">
                         <x:String>Office</x:String>
