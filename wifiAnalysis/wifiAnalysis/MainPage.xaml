@@ -37,8 +37,7 @@
                 BorderColor="Black" 
                 BorderWidth="2" 
                 HorizontalOptions="FillAndExpand" 
-                VerticalOptions="Center" 
-                Clicked="ScanButton_OnClicked"/>
+                VerticalOptions="Center"/>
             <Button Text="WebView Demo"
                 BackgroundColor="LightBlue" 
                 TextColor="White" 

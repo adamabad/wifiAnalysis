@@ -61,7 +61,7 @@ namespace wifiAnalysis
                     scanResult.userAgent = scanDeserialized.userAgent;
                     await App.ScanDatabase.SaveScanAsync(scanResult);
                     saveResultsButton.Text = "Database Saved";
-                    //Redirect here
+                    //await Navigation.PushAsync(new ScanProgressPage(scanResult));
                 }
                 else
                 {

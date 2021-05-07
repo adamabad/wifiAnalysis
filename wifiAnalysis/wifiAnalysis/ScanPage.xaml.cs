@@ -20,14 +20,6 @@ namespace wifiAnalysis
             PopulatePicker();
         }
 
-        private async void ScanButton_OnClicked(object sender, EventArgs e)
-        {
-            if (RoomSelected != -1)
-            {
-                await Navigation.PushAsync(new ScanProgressPage());
-            }
-        }
-
         void OnPickerSelectedIndexChanged(object sender, EventArgs e)
         {
             var picker = (Picker)sender;

@@ -7,38 +7,6 @@ using Xamarin.Forms;
 
 namespace wifiAnalysis
 {
-    public class DataConvert : IValueConverter
-    {
-        List<RoomObject> Rooms;
-        protected async void getRooms() {
-            Rooms = await App.ScanDatabase.GetRooms();
-        }
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (Rooms == null) {
-                getRooms();
-            }
-            ObservableCollection<string> convertible = null;
-            var result = value as ObservableCollection<int>;
-
-            if (result != null)
-            {
-                convertible = new ObservableCollection<string>();
-                foreach (var item in result)
-                {
-                    convertible.Add(Rooms.Find(x => x.Room_ID.Equals(item)).Room_Name);
-                }
-            }
-            return convertible;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     class PreviousPage : ContentPage
     {
         ListView listview;

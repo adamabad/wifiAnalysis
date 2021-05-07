@@ -27,11 +27,6 @@ namespace wifiAnalysis
             await Navigation.PushAsync(new PreviousPage());
         }
 
-        private async void ScanButton_OnClicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new ScanPageHybrid());
-        }
-
         private async void WebView_OnClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new WebViewDemoPage());
