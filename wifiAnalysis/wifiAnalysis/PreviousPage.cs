@@ -5,20 +5,20 @@ namespace wifiAnalysis
 {
     class PreviousPage : ContentPage
     {
+        ListView listview;
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            listview.ItemsSource = await App.ScanDatabase.GetScanResults();
+        }
         public PreviousPage()
         {
             Title = "Previous Scan Results";
-            ListView listview;
             Label header = new Label
             {
                 Text = "Previous Scans",
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
                 HorizontalOptions = LayoutOptions.Center
-            };
-
-            List<ScanObject> scansTest = new List<ScanObject>
-            {
-
             };
 
             listview = new ListView

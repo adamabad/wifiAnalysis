@@ -40,25 +40,32 @@ namespace wifiAnalysis
             async void onSaveButtonClicked(object sender, EventArgs args)
             {
                 string result = await webView.EvaluateJavaScriptAsync("parseResults2()");
-                ScanObject obj = new ScanObject
+                ScanObject scanResult = new ScanObject
                 {
-                    Room_ID = roomNo,
-                    date = DateTime.Now.ToString(),
-                    download = -1,
+                    Room_ID = roomNo
                 };
                 if (result != null)
                 {
-                    obj = JsonConvert.DeserializeObject<ScanObject>(result);
-                }
-                if (obj.download == -1)
-                {
-                    Console.WriteLine("object is null");
+                    Console.WriteLine(result);
+                    jsonScan scanDeserialized = JsonConvert.DeserializeObject<jsonScan>(result);
+                    scanResult.download = scanDeserialized.download;
+                    scanResult.hostname = scanDeserialized.hostname;
+                    scanResult.ip_address = scanDeserialized.ip_address;
+                    scanResult.jitter = scanDeserialized.jitter;
+                    scanResult.latency = scanDeserialized.latency;
+                    scanResult.maxDownload = scanDeserialized.maxDownload;
+                    scanResult.maxUpload = scanDeserialized.maxUpload;
+                    scanResult.testDate = scanDeserialized.testDate;
+                    scanResult.testServer = scanDeserialized.testServer;
+                    scanResult.upload = scanDeserialized.upload;
+                    scanResult.userAgent = scanDeserialized.userAgent;
+                    await App.ScanDatabase.SaveScanAsync(scanResult);
+                    saveResultsButton.Text = "Database Saved";
+                    //Redirect here
                 }
                 else
                 {
-                    //insert values into DB
-                    await App.ScanDatabase.SaveScanAsync(obj);
-                    //navigate to next page
+                    Console.WriteLine("object is null");
                 }
             }
 

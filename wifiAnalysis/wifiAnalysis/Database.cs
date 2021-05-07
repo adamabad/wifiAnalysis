@@ -44,7 +44,7 @@ namespace wifiAnalysis
                     testServer = "Boston1",
                     ip_address = "192.168.1.1",
                     hostname = "abb1",
-                    date = "5/7/2021"
+                    testDate = "5/7/2021"
                 };
                 SaveScanAsync(scanTest);
             }
