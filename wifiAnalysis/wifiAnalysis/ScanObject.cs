@@ -6,19 +6,14 @@ namespace wifiAnalysis
         [PrimaryKey, AutoIncrement, NotNull, Unique]
         public int Scan_ID { get; set; }
         [NotNull]
-        public int Ping { get; set; }
-        [NotNull]
-        public int Jitter { get; set; }
-        [NotNull]
-        public double Up { get; set; }
-        [NotNull]
-        public double Down { get; set; }
-        [NotNull]
-        public string Server { get; set; }
-        [NotNull]
-        public string IP { get; set; }
-        [NotNull]
-        public string HostName { get; set; }
-
+        public int Room_ID { get; set; }
+        public double download { get; set; }
+        public double upload { get; set; }
+        public int latency { get; set; }
+        public int jitter { get; set; }
+        public string testServer { get; set; }
+        public string ip_address { get; set; }
+        public string hostname { get; set; }
+        public string date { get; set; }
     }
 }

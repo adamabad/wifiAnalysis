@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using Xamarin.Forms;
 
 namespace wifiAnalysis
@@ -13,7 +12,7 @@ namespace wifiAnalysis
         public WebViewDemoPage()
         {
             Title = "Scan Settings";
-
+            int roomNo = 0;
             Label header = new Label
             {
                 Text = "WebView",
@@ -41,16 +40,26 @@ namespace wifiAnalysis
             async void onSaveButtonClicked(object sender, EventArgs args)
             {
                 string result = await webView.EvaluateJavaScriptAsync("parseResults2()");
-                object obj = null;
+                ScanObject obj = new ScanObject
+                {
+                    Room_ID = roomNo,
+                    date = DateTime.Now.ToString(),
+                    download = -1,
+                };
                 if (result != null)
                 {
-                    obj = JsonConvert.DeserializeObject(result);
+                    obj = JsonConvert.DeserializeObject<ScanObject>(result);
                 }
-                Console.WriteLine(obj!=null ? obj : "object is null");
-
-                //insert values into DB
-
-                //navigate to next page
+                if (obj.download == -1)
+                {
+                    Console.WriteLine("object is null");
+                }
+                else
+                {
+                    //insert values into DB
+                    await App.ScanDatabase.SaveScanAsync(obj);
+                    //navigate to next page
+                }
             }
 
             saveResultsButton.Clicked += onSaveButtonClicked;

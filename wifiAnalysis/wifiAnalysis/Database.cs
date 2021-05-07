@@ -32,6 +32,21 @@ namespace wifiAnalysis
                     Room_Name = "Kitchen"
                 };
                 SaveRoomAsync(room);
+
+                ScanObject scanTest;
+                scanTest = new ScanObject
+                {
+                    Room_ID = 1,
+                    download = 50,
+                    upload = 30.3,
+                    latency = 34,
+                    jitter = 20,
+                    testServer = "Boston1",
+                    ip_address = "192.168.1.1",
+                    hostname = "abb1",
+                    date = "5/7/2021"
+                };
+                SaveScanAsync(scanTest);
             }
             else
             {
