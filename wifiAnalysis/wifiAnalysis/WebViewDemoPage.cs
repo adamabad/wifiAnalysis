@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,10 +12,13 @@ namespace wifiAnalysis
     {
         public WebViewDemoPage()
         {
+            Title = "Scan Settings";
+
             Label header = new Label
             {
                 Text = "WebView",
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
+                //VerticalOptions = LayoutOptions.CenterAndExpand,
                 HorizontalOptions = LayoutOptions.Center
             };
 
@@ -27,8 +31,29 @@ namespace wifiAnalysis
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
 
-            //// Accomodate iPhone status bar.
-            //this.Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
+            Button saveResultsButton = new Button
+            {
+                Text = "Save Results",
+                VerticalOptions = LayoutOptions.CenterAndExpand,
+                HorizontalOptions = LayoutOptions.Center
+            };
+
+            async void onSaveButtonClicked(object sender, EventArgs args)
+            {
+                string result = await webView.EvaluateJavaScriptAsync("parseResults2()");
+                object obj = null;
+                if (result != null)
+                {
+                    obj = JsonConvert.DeserializeObject(result);
+                }
+                Console.WriteLine(obj!=null ? obj : "object is null");
+
+                //insert values into DB
+
+                //navigate to next page
+            }
+
+            saveResultsButton.Clicked += onSaveButtonClicked;
 
             // Build the page.
             this.Content = new StackLayout
@@ -36,7 +61,8 @@ namespace wifiAnalysis
                 Children =
                 {
                     header,
-                    webView
+                    webView,
+                    saveResultsButton
                 }
             };
         }
