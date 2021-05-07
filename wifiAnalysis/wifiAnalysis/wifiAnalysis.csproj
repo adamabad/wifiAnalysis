@@ -11,14 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ScanDatabase.db" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="ScanDatabase.db" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />

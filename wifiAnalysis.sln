@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wifiAnalysis.Android", "wif
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wifiAnalysis.iOS", "wifiAnalysis\wifiAnalysis.iOS\wifiAnalysis.iOS.csproj", "{C3B5631C-EAB1-487A-AFCA-E1F84D150837}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wifiAnalysis", "wifiAnalysis\wifiAnalysis\wifiAnalysis.csproj", "{A1F4B709-AFAB-44F7-8FFF-DA46DF9C7E52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "wifiAnalysis", "wifiAnalysis\wifiAnalysis\wifiAnalysis.csproj", "{A1F4B709-AFAB-44F7-8FFF-DA46DF9C7E52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

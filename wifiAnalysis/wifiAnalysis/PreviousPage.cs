@@ -1,16 +1,82 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
 using Xamarin.Forms;
 
 namespace wifiAnalysis
 {
+    public class DataConvert : IValueConverter
+    {
+        List<RoomObject> Rooms;
+        protected async void getRooms() {
+            Rooms = await App.ScanDatabase.GetRooms();
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (Rooms == null) {
+                getRooms();
+            }
+            ObservableCollection<string> convertible = null;
+            var result = value as ObservableCollection<int>;
+
+            if (result != null)
+            {
+                convertible = new ObservableCollection<string>();
+                foreach (var item in result)
+                {
+                    convertible.Add(Rooms.Find(x => x.Room_ID.Equals(item)).Room_Name);
+                }
+            }
+            return convertible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     class PreviousPage : ContentPage
     {
         ListView listview;
+        List<ScanObjectWithName> targetList;
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            listview.ItemsSource = await App.ScanDatabase.GetScanResults();
+            List<RoomObject> rooms = await App.ScanDatabase.GetRooms();
+            List<ScanObject> scans = await App.ScanDatabase.GetScanResults();
+            targetList = scans.Select(x => new ScanObjectWithName() {
+                    download = x.download,
+                    hostname = x.hostname,
+                    ip_address = x.ip_address,
+                    jitter = x.jitter,
+                    latency = x.latency,
+                    maxDownload = x.maxDownload,
+                    maxUpload = x.maxUpload,
+                    testDate = x.testDate,
+                    upload = x.upload,
+                    testServer = x.testServer,
+                    userAgent = x.userAgent,
+                    //Room_Name = rooms.Find(i => i.Room_ID.Equals(x.Room_ID)).Room_Name,
+                    Room_ID = x.Room_ID,
+                    isVisible = false,
+                })
+                .ToList();
+
+            listview.ItemsSource = targetList;
         }
+        private void OnItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            var scan = e.Item as ScanObjectWithName;
+            scan.isVisible = true;
+            int index = targetList.IndexOf(scan);
+            targetList.Remove(scan);
+            targetList.Insert(index, scan);
+        }
+
         public PreviousPage()
         {
             Title = "Previous Scan Results";
@@ -23,8 +89,8 @@ namespace wifiAnalysis
 
             listview = new ListView
             {
-
-                RowHeight = 120,
+                HasUnevenRows = true,
+                SelectionMode = ListViewSelectionMode.None,
                 ItemTemplate = new DataTemplate(() =>
                 {
                     Label roomLabel = new Label();
@@ -37,9 +103,23 @@ namespace wifiAnalysis
                     upload.SetBinding(Label.TextProperty,
                         new Binding("upload", BindingMode.OneWay, null, null, "Upload: {0} Mbps"));
                     Label ping = new Label();
-
                     ping.SetBinding(Label.TextProperty,
                         new Binding("latency", BindingMode.OneWay, null, null, "Ping: {0:d} ms"));
+                    
+                    Label jitter = new Label();
+                    jitter.SetBinding(Label.TextProperty,
+                        new Binding("jitter", BindingMode.OneWay, null, null, "Jitter: {0} "));
+                    jitter.SetBinding(Label.IsVisibleProperty, "isVisible");
+
+                    Label maxDownload = new Label();
+                    maxDownload.SetBinding(Label.TextProperty,
+                        new Binding("maxDownload", BindingMode.OneWay, null, null, "Max Download: {0} Mbps"));
+                    maxDownload.SetBinding(Label.IsVisibleProperty, "isVisible");
+
+                    Label maxUpload = new Label();
+                    maxUpload.SetBinding(Label.TextProperty,
+                        new Binding("maxUpload", BindingMode.OneWay, null, null, "Max Upload: {0} Mbps"));
+                    maxUpload.SetBinding(Label.IsVisibleProperty, "isVisible");
 
                     return new ViewCell
                     {
@@ -58,7 +138,10 @@ namespace wifiAnalysis
                                         roomLabel,
                                         download,
                                         upload,
-                                        ping
+                                        ping,
+                                        jitter,
+                                        maxDownload,
+                                        maxUpload
                                     }
                                 }
                             }
@@ -66,6 +149,8 @@ namespace wifiAnalysis
                     };
                 })
             };
+
+            listview.ItemTapped += OnItemTapped;
 
             this.Content = new StackLayout
             {
