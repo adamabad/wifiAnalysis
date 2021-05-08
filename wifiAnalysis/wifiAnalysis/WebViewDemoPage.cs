@@ -12,7 +12,7 @@ namespace wifiAnalysis
         public WebViewDemoPage()
         {
             Title = "Scan Settings";
-            int roomNo = 0;
+            int roomNo = 1;
             Label header = new Label
             {
                 Text = "WebView",

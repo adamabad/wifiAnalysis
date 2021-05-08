@@ -7,16 +7,57 @@ using Xamarin.Forms;
 
 namespace wifiAnalysis
 {
+    public class StringToDate : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value != null)
+            {
+                var item = DateTime.Parse((string)value);
+                if (item != null)
+                {
+                    return item.ToString("f");
+                }
+            }
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     class PreviousPage : ContentPage
     {
         ListView listview;
         List<ScanObjectWithName> targetList;
+
         protected override async void OnAppearing()
         {
             base.OnAppearing();
             List<RoomObject> rooms = await App.ScanDatabase.GetRooms();
             List<ScanObject> scans = await App.ScanDatabase.GetScanResults();
-            targetList = scans.Select(x => new ScanObjectWithName() {
+            targetList = (from s in scans
+                        join r in rooms on s.Room_ID equals r.Room_ID
+                        select new ScanObjectWithName
+                        {
+                            Room_Name = r.Room_Name,
+                            download = s.download,
+                            hostname = s.hostname,
+                            ip_address = s.ip_address,
+                            jitter = s.jitter,
+                            latency = s.latency,
+                            maxDownload = s.maxDownload,
+                            maxUpload = s.maxUpload,
+                            testDate = s.testDate,
+                            upload = s.upload,
+                            testServer = s.testServer,
+                            userAgent = s.userAgent,
+                            Room_ID = s.Room_ID,
+                            isVisible = false,
+                        }).ToList();
+            /*targetList = scans.Select(x => new ScanObjectWithName() {
                     download = x.download,
                     hostname = x.hostname,
                     ip_address = x.ip_address,
@@ -28,21 +69,22 @@ namespace wifiAnalysis
                     upload = x.upload,
                     testServer = x.testServer,
                     userAgent = x.userAgent,
-                    //Room_Name = rooms.Find(i => i.Room_ID.Equals(x.Room_ID)).Room_Name,
                     Room_ID = x.Room_ID,
                     isVisible = false,
                 })
                 .ToList();
-
+            */
             listview.ItemsSource = targetList;
         }
-        private void OnItemTapped(object sender, ItemTappedEventArgs e)
+        async void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            var scan = e.Item as ScanObjectWithName;
-            scan.isVisible = true;
-            int index = targetList.IndexOf(scan);
-            targetList.Remove(scan);
-            targetList.Insert(index, scan);
+            if (listview.SelectedItem != null)
+            {
+                var detailPage = new DetailPage();
+                detailPage.BindingContext = e.SelectedItem as ScanObjectWithName;
+                listview.SelectedItem = null;
+                await Navigation.PushModalAsync(detailPage);
+            }
         }
 
         public PreviousPage()
@@ -54,16 +96,17 @@ namespace wifiAnalysis
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
                 HorizontalOptions = LayoutOptions.Center
             };
-
             listview = new ListView
             {
                 HasUnevenRows = true,
-                SelectionMode = ListViewSelectionMode.None,
                 ItemTemplate = new DataTemplate(() =>
                 {
+                    
                     Label roomLabel = new Label();
-                    roomLabel.SetBinding(Label.TextProperty,
-                       new Binding("Room_ID", BindingMode.OneWay, null, null, "Room: {0:d}"));
+                    roomLabel.SetBinding(Label.TextProperty, "Room_Name");
+                    Label timeLabel = new Label();
+                    timeLabel.SetBinding(Label.TextProperty,
+                        new Binding("testDate", BindingMode.OneWay, new StringToDate(), null, "{0}"));
                     Label download = new Label();
                     download.SetBinding(Label.TextProperty,
                         new Binding("download", BindingMode.OneWay, null, null, "Download: {0} Mbps"));
@@ -73,28 +116,14 @@ namespace wifiAnalysis
                     Label ping = new Label();
                     ping.SetBinding(Label.TextProperty,
                         new Binding("latency", BindingMode.OneWay, null, null, "Ping: {0:d} ms"));
-                    
-                    Label jitter = new Label();
-                    jitter.SetBinding(Label.TextProperty,
-                        new Binding("jitter", BindingMode.OneWay, null, null, "Jitter: {0} "));
-                    jitter.SetBinding(Label.IsVisibleProperty, "isVisible");
-
-                    Label maxDownload = new Label();
-                    maxDownload.SetBinding(Label.TextProperty,
-                        new Binding("maxDownload", BindingMode.OneWay, null, null, "Max Download: {0} Mbps"));
-                    maxDownload.SetBinding(Label.IsVisibleProperty, "isVisible");
-
-                    Label maxUpload = new Label();
-                    maxUpload.SetBinding(Label.TextProperty,
-                        new Binding("maxUpload", BindingMode.OneWay, null, null, "Max Upload: {0} Mbps"));
-                    maxUpload.SetBinding(Label.IsVisibleProperty, "isVisible");
 
                     return new ViewCell
                     {
                         View = new StackLayout
                         {
                             Padding = new Thickness(0, 5),
-                            Orientation = StackOrientation.Horizontal,
+                            HorizontalOptions = LayoutOptions.FillAndExpand,
+                            VerticalOptions = LayoutOptions.Center,
                             Children =
                             {
                                 new StackLayout
@@ -103,13 +132,18 @@ namespace wifiAnalysis
                                     Spacing = 0,
                                     Children =
                                     {
-                                        roomLabel,
+                                        new StackLayout
+                                        {
+                                            Orientation = StackOrientation.Horizontal,
+                                            Children =
+                                            {
+                                                roomLabel,
+                                                timeLabel
+                                            }
+                                        },
                                         download,
                                         upload,
-                                        ping,
-                                        jitter,
-                                        maxDownload,
-                                        maxUpload
+                                        ping
                                     }
                                 }
                             }
@@ -118,7 +152,7 @@ namespace wifiAnalysis
                 })
             };
 
-            listview.ItemTapped += OnItemTapped;
+            listview.ItemSelected += OnItemSelected;
 
             this.Content = new StackLayout
             {
