@@ -30,14 +30,14 @@ namespace wifiAnalysis
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
 
-            Button saveResultsButton = new Button
+            Button viewResultsButton = new Button
             {
-                Text = "Save Results",
+                Text = "View Results",
                 VerticalOptions = LayoutOptions.CenterAndExpand,
                 HorizontalOptions = LayoutOptions.Center
             };
 
-            async void onSaveButtonClicked(object sender, EventArgs args)
+            async void onViewButtonClicked(object sender, EventArgs args)
             {
                 string result = await webView.EvaluateJavaScriptAsync("parseResults2()");
                 ScanObject scanResult = new ScanObject
@@ -59,9 +59,9 @@ namespace wifiAnalysis
                     scanResult.testServer = scanDeserialized.testServer;
                     scanResult.upload = scanDeserialized.upload;
                     scanResult.userAgent = scanDeserialized.userAgent;
-                    await App.ScanDatabase.SaveScanAsync(scanResult);
-                    saveResultsButton.Text = "Database Saved";
-                    //await Navigation.PushAsync(new ScanProgressPage(scanResult));
+                    //await App.ScanDatabase.SaveScanAsync(scanResult);
+                    //viewResultsButton.Text = "Database Saved";
+                    await Navigation.PushAsync(new ScanResults(scanResult));
                 }
                 else
                 {
@@ -69,7 +69,7 @@ namespace wifiAnalysis
                 }
             }
 
-            saveResultsButton.Clicked += onSaveButtonClicked;
+            viewResultsButton.Clicked += onViewButtonClicked;
 
             // Build the page.
             this.Content = new StackLayout
@@ -78,7 +78,7 @@ namespace wifiAnalysis
                 {
                     header,
                     webView,
-                    saveResultsButton
+                    viewResultsButton
                 }
             };
         }

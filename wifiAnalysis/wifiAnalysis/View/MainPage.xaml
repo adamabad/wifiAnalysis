@@ -15,14 +15,14 @@
                FontSize="Title"
                FontAttributes="Bold"
                TextColor="White"/>
-            <Button Text="Start new Scan" 
+            <Button Text="Start Scan"
                 BackgroundColor="LightBlue" 
                 TextColor="White" 
                 BorderColor="Black" 
                 BorderWidth="2" 
                 HorizontalOptions="FillAndExpand" 
                 VerticalOptions="Center" 
-                Clicked="StartButton_OnClicked"/>
+                Clicked="StartScan_OnClicked"/>
             <Button Text="View Previous Scans"
                 BackgroundColor="LightBlue" 
                 TextColor="White" 
@@ -31,21 +31,6 @@
                 HorizontalOptions="FillAndExpand" 
                 VerticalOptions="Center" 
                 Clicked="PreviousButton_OnClicked"/>
-            <Button Text="Go to Scan"
-                BackgroundColor="LightBlue" 
-                TextColor="White" 
-                BorderColor="Black" 
-                BorderWidth="2" 
-                HorizontalOptions="FillAndExpand" 
-                VerticalOptions="Center"/>
-            <Button Text="WebView Demo"
-                BackgroundColor="LightBlue" 
-                TextColor="White" 
-                BorderColor="Black" 
-                BorderWidth="2" 
-                HorizontalOptions="FillAndExpand" 
-                VerticalOptions="Center" 
-                Clicked="WebView_OnClicked"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
