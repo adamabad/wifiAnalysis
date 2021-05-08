@@ -29,7 +29,7 @@ namespace wifiAnalysis
 
         private async void WebView_OnClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new WebViewDemoPage());
+            await Navigation.PushAsync(new ScanningPage());
         }
     }
 

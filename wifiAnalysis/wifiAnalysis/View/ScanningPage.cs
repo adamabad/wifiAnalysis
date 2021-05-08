@@ -7,9 +7,9 @@ using Xamarin.Forms;
 
 namespace wifiAnalysis
 {
-    public class WebViewDemoPage : ContentPage
+    public class ScanningPage : ContentPage
     {
-        public WebViewDemoPage()
+        public ScanningPage()
         {
             Title = "Scan Settings";
             int roomNo = 1;
