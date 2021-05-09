@@ -16,14 +16,12 @@ namespace wifiAnalysis
                 HorizontalOptions = LayoutOptions.Center
             };
             header.SetBinding(Label.TextProperty, "Room_Name");
-
             var dateLabel = new Label
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
             };
             dateLabel.SetBinding(Label.TextProperty,
                 new Binding("testDate", BindingMode.OneWay, new StringToDate(), null, "{0}"));
-
             var downloadLabel = new Label
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),

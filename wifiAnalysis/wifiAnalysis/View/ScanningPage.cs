@@ -40,17 +40,24 @@ namespace wifiAnalysis
                 HorizontalOptions = LayoutOptions.Center
             };
 
-            async void onViewButtonClicked(object sender, EventArgs args)
+            Label sliderLabel = new Label 
             {
                 Text = "Level of Accuracy: " + sliderValue,
                 TextColor = Color.FromHex("f5f5f5"),
                 HorizontalOptions = LayoutOptions.Center,
             };
+
             Slider accuracySlider = new Slider
             {
                 Maximum = 10,
                 Minimum = 1,
                 Value = sliderValue,
+                HorizontalOptions = LayoutOptions.FillAndExpand
+            };
+
+            Button startScanButton = new Button
+            { 
+                Text = "Start Scan",
                 HorizontalOptions = LayoutOptions.FillAndExpand
             };
 
