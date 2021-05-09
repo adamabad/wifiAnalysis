@@ -24,15 +24,9 @@ namespace wifiAnalysis
                 database.CreateTableAsync<ScanObject>().Wait();
                 room = new RoomObject
                 {
-                    Room_Name = "Living Room"
+                    Room_Name = "Not Specified"
                 };
                 SaveRoomAsync(room);
-                room = new RoomObject
-                {
-                    Room_Name = "Kitchen"
-                };
-                SaveRoomAsync(room);
-
             }
             else
             {

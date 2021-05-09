@@ -13,11 +13,12 @@ namespace wifiAnalysis
         Button MenuButton;
         Button ScanButton;
         ListView listView;
+        List<RoomObject> rooms;
         List<ScanObjectWithName> targetList;
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            List<RoomObject> rooms = await App.ScanDatabase.GetRooms();
+            rooms = await App.ScanDatabase.GetRooms();
             List<ScanObject> scans = await App.ScanDatabase.GetFiveScans();
             targetList = (from s in scans
                           join r in rooms on s.Room_ID equals r.Room_ID
@@ -41,8 +42,7 @@ namespace wifiAnalysis
             targetList.Reverse();
             listView.ItemsSource = targetList;
         }
-
-        public ScanResults(ScanObject scanResults)
+        public ScanResults(ScanObject scanResults, string Room_Name)
         {
             Title = "Scan Results";
             Scan = scanResults;
@@ -51,7 +51,7 @@ namespace wifiAnalysis
             {
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
                 HorizontalOptions = LayoutOptions.Center,
-                Text = scanResults.Room_ID.ToString() 
+                Text = Room_Name
             };
 
             var dateLabel = new Label
@@ -293,8 +293,16 @@ namespace wifiAnalysis
 
         async void OnSaveButtonClicked(object sender, EventArgs e)
         {
-            await App.ScanDatabase.SaveScanAsync(Scan);
-            SaveButton.Text = "Saved.";
+            try
+            {
+                await App.ScanDatabase.SaveScanAsync(Scan);
+                SaveButton.Text = "Saved.";
+            }
+            catch (Exception)
+            {
+                SaveButton.Text = "Error.";
+            }
+           
             SaveButton.IsEnabled = false;
         }
     }

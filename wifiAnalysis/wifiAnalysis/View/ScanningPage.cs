@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace wifiAnalysis
@@ -11,25 +12,26 @@ namespace wifiAnalysis
     {
         List<RoomObject> rooms;
         Picker picker;
+        Entry entry;
+        bool rescan = false;
         protected override async void OnAppearing()
         {
             base.OnAppearing();
             rooms = await App.ScanDatabase.GetRooms();
-            rooms.Add(new RoomObject
-            {
-                Room_ID = 0,
-                Room_Name = "Not Specified"
-            });
+            rooms.Reverse();
             picker.Items.Clear();
             foreach (RoomObject room in rooms)
             {
                 picker.Items.Add(room.Room_Name);
             }
+            if (!rescan)
+            {
+                picker.SelectedIndex = rooms.Count - 1;
+            } 
         }
         public ScanningPage()
         {
             Title = "Scan Settings";
-            int roomNo = 1;
             bool scanInprogress = false;
             int sliderValue = 5;
 
@@ -78,13 +80,58 @@ namespace wifiAnalysis
                 Text = "Start Scan",
                 HorizontalOptions = LayoutOptions.FillAndExpand
             };
-
+            entry = new Entry
+            {
+                Placeholder = "Enter Room Name",
+                IsVisible = false
+            };
             picker = new Picker
             {
-                SelectedIndex = 0,
+                Title = "Select a Room",
                 TextColor = Color.WhiteSmoke,
-                HorizontalTextAlignment = TextAlignment.Center
+                HorizontalTextAlignment = TextAlignment.Center,
+                HorizontalOptions = LayoutOptions.FillAndExpand
             };
+
+            Button addRoom = new Button
+            {
+                Text = "Add Room"
+            };
+
+            async void AddRoom_Clicked(object sender, EventArgs e)
+            {
+                entry.IsVisible = true;
+                await Task.Delay(500);
+                entry.Focus();
+            }
+
+            async void Entry_Completed(object sender, EventArgs e)
+            {
+                entry.IsVisible = false;
+                try
+                {
+                    RoomObject room = new RoomObject { Room_Name = entry.Text};
+                    await App.ScanDatabase.SaveRoomAsync(room);
+
+                    rooms = await App.ScanDatabase.GetRooms();
+                    rooms.Add(new RoomObject
+                    {
+                        Room_ID = 0,
+                        Room_Name = "Not Specified"
+                    });
+                    picker.Items.Clear();
+                    foreach (RoomObject myroom in rooms)
+                    {
+                        picker.Items.Add(myroom.Room_Name);
+                    }
+                    picker.SelectedIndex = rooms.FindIndex(x => x.Room_Name.Equals(room.Room_Name));
+                }
+                catch (Exception)
+                {
+                    await DisplayAlert("Error", "Could not save room.", "OK");
+                }
+                entry.Text = "";
+            }
 
             async void onStartScanButtonClicked(object sender, EventArgs args)
             {
@@ -94,7 +141,7 @@ namespace wifiAnalysis
                     accuracySlider.IsEnabled = false;
                     ScanObject scanResult = new ScanObject
                     {
-                        Room_ID = roomNo
+                        Room_ID = rooms.Find(x => x.Room_Name.Equals(picker.Items[picker.SelectedIndex])).Room_ID
                     };
                     if (result != null)
                     {
@@ -111,7 +158,7 @@ namespace wifiAnalysis
                         scanResult.testServer = scanDeserialized.testServer;
                         scanResult.upload = scanDeserialized.upload;
                         scanResult.userAgent = scanDeserialized.userAgent;
-                        await App.ScanDatabase.SaveScanAsync(scanResult);
+                        //await App.ScanDatabase.SaveScanAsync(scanResult);
                         //saveResultsButton.Text = "Database Saved";
                         //await Navigation.PushAsync(new ScanProgressPage(scanResult));
                         scanInprogress = false;
@@ -119,23 +166,28 @@ namespace wifiAnalysis
                         {
                             refresh();
                         });
+                        string Room_Name = picker.SelectedItem.ToString();
                         startScanButton.Text = "Start Scan";
-                        await Navigation.PushModalAsync(new ScanResults(scanResult));
+                        await Navigation.PushModalAsync(new ScanResults(scanResult, Room_Name));
                     }
                 }
                 else
                 {
                     startScanButton.Text = "See Results";
                     scanInprogress = true;
+                    picker.IsEnabled = false;
+                    accuracySlider.IsEnabled = false;
                     await webView.EvaluateJavaScriptAsync("callStart(" + sliderValue + ")");
                 }
             }
 
             void refresh()
             {
+                rescan = true;
                 webView.Reload();
                 scanInprogress = false;
                 accuracySlider.IsEnabled = true;
+                picker.IsEnabled = true;
             }
 
             void AccuracySlider_ValueChanged(object sender, ValueChangedEventArgs e)
@@ -146,6 +198,9 @@ namespace wifiAnalysis
 
             startScanButton.Clicked += onStartScanButtonClicked;
             accuracySlider.ValueChanged += AccuracySlider_ValueChanged;
+            addRoom.Clicked += AddRoom_Clicked;
+            entry.Completed += Entry_Completed;
+
             // Build the page.
             this.Content = new StackLayout
             {
@@ -153,7 +208,17 @@ namespace wifiAnalysis
                 Children =
                 {
                     webView,
-                    picker,
+                    entry,
+                    new StackLayout
+                    { 
+                        Orientation = StackOrientation.Horizontal,
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        Children =
+                        { 
+                            addRoom,
+                            picker
+                        }
+                    },
                     sliderLabel,
                     accuracySlider,
                     startScanButton
