@@ -33,14 +33,14 @@ namespace wifiAnalysis
                 VerticalOptions = LayoutOptions.FillAndExpand
             };
 
-            Button startScanButton = new Button
+            Button viewResultsButton = new Button
             {
-                Text = "Start Scan",
-                VerticalOptions = LayoutOptions.Center,
+                Text = "View Results",
+                VerticalOptions = LayoutOptions.CenterAndExpand,
                 HorizontalOptions = LayoutOptions.Center
             };
 
-            Label sliderLabel = new Label
+            async void onViewButtonClicked(object sender, EventArgs args)
             {
                 Text = "Level of Accuracy: " + sliderValue,
                 TextColor = Color.FromHex("f5f5f5"),
@@ -82,6 +82,7 @@ namespace wifiAnalysis
                         await App.ScanDatabase.SaveScanAsync(scanResult);
                         //saveResultsButton.Text = "Database Saved";
                         //await Navigation.PushAsync(new ScanProgressPage(scanResult));
+                        await Navigation.PushAsync(new ScanResults(scanResult));
                     }
                     else
                     {
