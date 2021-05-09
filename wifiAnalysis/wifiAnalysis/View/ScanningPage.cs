@@ -89,7 +89,8 @@ namespace wifiAnalysis
                         await App.ScanDatabase.SaveScanAsync(scanResult);
                         //saveResultsButton.Text = "Database Saved";
                         //await Navigation.PushAsync(new ScanProgressPage(scanResult));
-                        await Navigation.PushAsync(new ScanResults(scanResult));
+                        scanInprogress = false;
+                        await Navigation.PushModalAsync(new ScanResults(scanResult));
                     }
                     else
                     {

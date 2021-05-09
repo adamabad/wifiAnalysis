@@ -3,6 +3,7 @@ using SQLite;
 using System.Threading.Tasks;
 using System.IO;
 using System;
+using System.Linq;
 
 namespace wifiAnalysis
 {
@@ -32,19 +33,6 @@ namespace wifiAnalysis
                 };
                 SaveRoomAsync(room);
 
-                ScanObject scanTest;
-                scanTest = new ScanObject
-                {
-                    Room_ID = 1,
-                    download = 50,
-                    upload = 30.3,
-                    latency = 34,
-                    jitter = 20,
-                    testServer = "Boston1",
-                    ip_address = "192.168.1.1",
-                    hostname = "abb1",
-                };
-                SaveScanAsync(scanTest);
             }
             else
             {
@@ -63,7 +51,10 @@ namespace wifiAnalysis
         {
             return database.Table<ScanObject>().Where(i => i.Scan_ID == id).FirstOrDefaultAsync();
         }
-
+        public Task<List<ScanObject>> GetFiveScans()
+        {
+            return database.Table<ScanObject>().OrderByDescending(x => x.Scan_ID).Take(5).ToListAsync();
+        }
         public Task<int> SaveScanAsync(ScanObject scanObject)
         {
             if (scanObject.Scan_ID != 0)

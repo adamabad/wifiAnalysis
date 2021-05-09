@@ -15,6 +15,11 @@ namespace wifiAnalysis
     {
         public MainPage()
         {
+            var existingPages = Navigation.NavigationStack.ToList();
+            foreach (var page in existingPages)
+            {
+                Navigation.RemovePage(page);
+            }
             InitializeComponent();
         }
 

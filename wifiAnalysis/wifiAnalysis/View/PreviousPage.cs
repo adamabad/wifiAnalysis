@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using Xamarin.Forms;
@@ -74,6 +73,7 @@ namespace wifiAnalysis
                 })
                 .ToList();
             */
+            targetList.Reverse();
             listview.ItemsSource = targetList;
         }
         async void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
