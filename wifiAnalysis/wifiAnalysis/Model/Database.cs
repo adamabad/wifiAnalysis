@@ -55,6 +55,7 @@ namespace wifiAnalysis
         {
             return database.Table<ScanObject>().OrderByDescending(x => x.Scan_ID).Take(5).ToListAsync();
         }
+
         public Task<int> SaveScanAsync(ScanObject scanObject)
         {
             if (scanObject.Scan_ID != 0)

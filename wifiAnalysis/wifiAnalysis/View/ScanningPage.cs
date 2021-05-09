@@ -9,6 +9,23 @@ namespace wifiAnalysis
 {
     public class ScanningPage : ContentPage
     {
+        List<RoomObject> rooms;
+        Picker picker;
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            rooms = await App.ScanDatabase.GetRooms();
+            rooms.Add(new RoomObject
+            {
+                Room_ID = 0,
+                Room_Name = "Not Specified"
+            });
+            picker.Items.Clear();
+            foreach (RoomObject room in rooms)
+            {
+                picker.Items.Add(room.Room_Name);
+            }
+        }
         public ScanningPage()
         {
             Title = "Scan Settings";
@@ -30,7 +47,8 @@ namespace wifiAnalysis
                 {
                     Url = "http://klaipsc.mathcs.wilkes.edu/speedtest2",
                 },
-                VerticalOptions = LayoutOptions.FillAndExpand
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                BackgroundColor = Color.FromHex("1e90ff")
             };
 
             Button viewResultsButton = new Button
@@ -59,6 +77,13 @@ namespace wifiAnalysis
             { 
                 Text = "Start Scan",
                 HorizontalOptions = LayoutOptions.FillAndExpand
+            };
+
+            picker = new Picker
+            {
+                SelectedIndex = 0,
+                TextColor = Color.WhiteSmoke,
+                HorizontalTextAlignment = TextAlignment.Center
             };
 
             async void onStartScanButtonClicked(object sender, EventArgs args)
@@ -90,11 +115,12 @@ namespace wifiAnalysis
                         //saveResultsButton.Text = "Database Saved";
                         //await Navigation.PushAsync(new ScanProgressPage(scanResult));
                         scanInprogress = false;
+                        MessagingCenter.Subscribe<ScanResults>(this, "ping", (theSender) =>
+                        {
+                            refresh();
+                        });
+                        startScanButton.Text = "Start Scan";
                         await Navigation.PushModalAsync(new ScanResults(scanResult));
-                    }
-                    else
-                    {
-                        Console.WriteLine("object is null");
                     }
                 }
                 else
@@ -103,6 +129,13 @@ namespace wifiAnalysis
                     scanInprogress = true;
                     await webView.EvaluateJavaScriptAsync("callStart(" + sliderValue + ")");
                 }
+            }
+
+            void refresh()
+            {
+                webView.Reload();
+                scanInprogress = false;
+                accuracySlider.IsEnabled = true;
             }
 
             void AccuracySlider_ValueChanged(object sender, ValueChangedEventArgs e)
@@ -120,6 +153,7 @@ namespace wifiAnalysis
                 Children =
                 {
                     webView,
+                    picker,
                     sliderLabel,
                     accuracySlider,
                     startScanButton

@@ -18,7 +18,7 @@ namespace wifiAnalysis
         {
             base.OnAppearing();
             List<RoomObject> rooms = await App.ScanDatabase.GetRooms();
-            List<ScanObject> scans = await App.ScanDatabase.GetScanResults();
+            List<ScanObject> scans = await App.ScanDatabase.GetFiveScans();
             targetList = (from s in scans
                           join r in rooms on s.Room_ID equals r.Room_ID
                           select new ScanObjectWithName
@@ -138,12 +138,15 @@ namespace wifiAnalysis
                     Label download = new Label();
                     download.SetBinding(Label.TextProperty,
                         new Binding("download", BindingMode.OneWay, null, null, "Download: {0} Mbps"));
+                    download.FontAttributes = FontAttributes.Bold;
                     Label upload = new Label();
                     upload.SetBinding(Label.TextProperty,
                         new Binding("upload", BindingMode.OneWay, null, null, "Upload: {0} Mbps"));
+                    upload.FontAttributes = FontAttributes.Bold;
                     Label ping = new Label();
                     ping.SetBinding(Label.TextProperty,
                         new Binding("latency", BindingMode.OneWay, null, null, "Ping: {0:d} ms"));
+                    ping.FontAttributes = FontAttributes.Bold;
 
                     return new ViewCell
                     {
@@ -156,7 +159,7 @@ namespace wifiAnalysis
                             {
                                 new StackLayout
                                 {
-                                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                                    HorizontalOptions = LayoutOptions.FillAndExpand,
                                     Children =
                                     {
                                         roomLabel,
@@ -165,7 +168,7 @@ namespace wifiAnalysis
                                 },
                                 new StackLayout
                                 {
-                                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                                    HorizontalOptions = LayoutOptions.FillAndExpand,
                                     Children =
                                     {
                                         download,
@@ -278,9 +281,8 @@ namespace wifiAnalysis
         }
 
         async void ScanButton_Clicked(object sender, EventArgs e)
-        { 
-            Navigation.InsertPageBefore(new ScanningPage(), Navigation.NavigationStack[Navigation.NavigationStack.Count - 1]);
-            Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count]);
+        {
+            MessagingCenter.Send<ScanResults>(this, "ping");
             await Navigation.PopModalAsync();
         }
 
