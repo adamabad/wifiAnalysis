@@ -8,7 +8,7 @@
              BackgroundImageSource="bg.jpg">
     <ContentPage.Content>
         <StackLayout Padding="50" VerticalOptions="CenterAndExpand">
-            <Label Text="WiFi Analysis" 
+            <Label Text="Wi-Fi Analysis" 
                Padding="10"  
                HorizontalOptions="FillAndExpand"
                FontFamily="Fantasy"
@@ -17,7 +17,7 @@
                TextColor="White"/>
             <Button Text="Start Scan"
                 BackgroundColor="LightBlue" 
-                TextColor="White" 
+                TextColor="Black" 
                 BorderColor="Black" 
                 BorderWidth="2" 
                 HorizontalOptions="FillAndExpand" 
@@ -25,7 +25,7 @@
                 Clicked="StartScan_OnClicked"/>
             <Button Text="View Previous Scans"
                 BackgroundColor="LightBlue" 
-                TextColor="White" 
+                TextColor="Black" 
                 BorderColor="Black" 
                 BorderWidth="2" 
                 HorizontalOptions="FillAndExpand" 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
 using Xamarin.Forms;
+using wifiAnalysis.View;
 
 namespace wifiAnalysis
 {
@@ -10,6 +11,7 @@ namespace wifiAnalysis
     {
         ScanObject Scan;
         Button SaveButton;
+        Button TipsButton;
         Button MenuButton;
         Button ScanButton;
         ListView listView;
@@ -51,6 +53,7 @@ namespace wifiAnalysis
             {
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
                 HorizontalOptions = LayoutOptions.Center,
+                FontAttributes = FontAttributes.Bold,
                 Text = Room_Name
             };
 
@@ -60,18 +63,26 @@ namespace wifiAnalysis
                 Text = DateTime.Parse(scanResults.testDate).ToString("f")
             };
 
+            var line = new BoxView
+            {
+                HeightRequest = 1,
+                Color = Color.DarkGray,
+            };
+
             var downloadLabel = new Label
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                 FontAttributes = FontAttributes.Bold,
-                Text = string.Format("{0} Mbps", scanResults.download.ToString())
+                Text = string.Format("{0} Mbps", scanResults.download.ToString()),
+                TextColor = (scanResults.download>50)? Color.Green : Color.Red
             };
 
             var uploadLabel = new Label
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                 FontAttributes = FontAttributes.Bold,
-                Text = string.Format("{0} Mbps", scanResults.upload.ToString())
+                Text = string.Format("{0} Mbps", scanResults.upload.ToString()),
+                TextColor = (scanResults.upload > 20) ? Color.Green : Color.Red
             };
 
             var hostnameLabel = new Label
@@ -92,61 +103,80 @@ namespace wifiAnalysis
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                 FontAttributes = FontAttributes.Bold,
-                Text = string.Format("{0} ms", scanResults.jitter.ToString())
+                Text = string.Format("{0} ms", scanResults.jitter.ToString()),
+                TextColor = (scanResults.jitter < 35) ? Color.Green : Color.Red
             };
 
             var pingLabel = new Label
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                 FontAttributes = FontAttributes.Bold,
-                Text = string.Format("{0} ms", scanResults.latency.ToString())
+                Text = string.Format("{0} ms", scanResults.latency.ToString()),
+                TextColor = (scanResults.latency < 100) ? Color.Green : Color.Red
             };
 
             var maxDLabel = new Label
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                 FontAttributes = FontAttributes.Bold,
-                Text = string.Format("{0} Mbps", scanResults.maxDownload.ToString())
+                Text = string.Format("{0} Mbps", scanResults.maxDownload.ToString()),
+                TextColor = (scanResults.maxDownload > 50) ? Color.Green : Color.Red
             };
 
             var maxULabel = new Label
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                 FontAttributes = FontAttributes.Bold,
-                Text = string.Format("{0} Mbps", scanResults.maxUpload.ToString())
+                Text = string.Format("{0} Mbps", scanResults.maxUpload.ToString()),
+                TextColor = (scanResults.maxUpload > 50) ? Color.Green : Color.Red
             };
 
-            SaveButton = new Button { Text = "Save Results" };
-            MenuButton = new Button { Text = "Home" };
-            ScanButton = new Button { Text = "Scan Again" };
+            var previousLabel = new Label
+            {
+                FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
+                FontAttributes = FontAttributes.Bold,
+                HorizontalOptions = LayoutOptions.Center,
+                Padding = new Thickness(0, 40, 0, 0),
+                Text = "Recent Scans"
+            };
+
+            SaveButton = new Button { Text = "Save Scan Results" };
+            TipsButton = new Button { Text = "View Connectivity Tips" };
+            MenuButton = new Button { Text = "Home", HorizontalOptions = LayoutOptions.FillAndExpand};
+            ScanButton = new Button { Text = "Scan Again", HorizontalOptions = LayoutOptions.FillAndExpand };
 
             SaveButton.Clicked += OnSaveButtonClicked;
+            TipsButton.Clicked += OnTipsButtonClicked;
             MenuButton.Clicked += MenuButton_Clicked;
             ScanButton.Clicked += ScanButton_Clicked;
 
             listView = new ListView
             {
                 HasUnevenRows = true,
+                SeparatorVisibility = SeparatorVisibility.Default,
                 SelectionMode = ListViewSelectionMode.None,
                 ItemTemplate = new DataTemplate(() =>
                 {
+
                     Label roomLabel = new Label();
                     roomLabel.SetBinding(Label.TextProperty, "Room_Name");
+                    roomLabel.FontAttributes = FontAttributes.Bold;
+
                     Label timeLabel = new Label();
                     timeLabel.SetBinding(Label.TextProperty,
                         new Binding("testDate", BindingMode.OneWay, new StringToDate(), null, "{0}"));
+
                     Label download = new Label();
                     download.SetBinding(Label.TextProperty,
                         new Binding("download", BindingMode.OneWay, null, null, "Download: {0} Mbps"));
-                    download.FontAttributes = FontAttributes.Bold;
+
                     Label upload = new Label();
                     upload.SetBinding(Label.TextProperty,
                         new Binding("upload", BindingMode.OneWay, null, null, "Upload: {0} Mbps"));
-                    upload.FontAttributes = FontAttributes.Bold;
+
                     Label ping = new Label();
                     ping.SetBinding(Label.TextProperty,
                         new Binding("latency", BindingMode.OneWay, null, null, "Ping: {0:d} ms"));
-                    ping.FontAttributes = FontAttributes.Bold;
 
                     return new ViewCell
                     {
@@ -154,7 +184,7 @@ namespace wifiAnalysis
                         {
                             Padding = new Thickness(0, 5),
                             HorizontalOptions = LayoutOptions.FillAndExpand,
-                            VerticalOptions = LayoutOptions.Center,
+                            //VerticalOptions = LayoutOptions.Center,
                             Children =
                             {
                                 new StackLayout
@@ -199,6 +229,7 @@ namespace wifiAnalysis
                             dateLabel
                         }
                     },
+                    line,
                     new StackLayout
                     {
                         Orientation = StackOrientation.Horizontal,
@@ -264,6 +295,10 @@ namespace wifiAnalysis
                     },
                     new Label{ Text = "Host:", FontSize = Device.GetNamedSize (NamedSize.Medium, typeof(Label)), HorizontalOptions = LayoutOptions.FillAndExpand },
                     hostnameLabel,
+                    TipsButton,
+                    SaveButton,
+                    previousLabel,
+                    new BoxView { HeightRequest = 1, Color = Color.DarkGray },
                     listView,
                     new StackLayout
                     {
@@ -273,7 +308,6 @@ namespace wifiAnalysis
                         {
                             MenuButton,
                             ScanButton,
-                            SaveButton
                         }
                     },
                 }
@@ -290,6 +324,11 @@ namespace wifiAnalysis
         {
             App.Current.MainPage = new NavigationPage(new MainPage());
         }
+
+        async void OnTipsButtonClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(new TipsPage());
+        }    
 
         async void OnSaveButtonClicked(object sender, EventArgs e)
         {

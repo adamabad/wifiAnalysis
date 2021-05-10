@@ -104,6 +104,8 @@ namespace wifiAnalysis
                     
                     Label roomLabel = new Label();
                     roomLabel.SetBinding(Label.TextProperty, "Room_Name");
+                    roomLabel.FontAttributes = FontAttributes.Bold;
+
                     Label timeLabel = new Label();
                     timeLabel.SetBinding(Label.TextProperty,
                         new Binding("testDate", BindingMode.OneWay, new StringToDate(), null, "{0}"));
@@ -135,6 +137,7 @@ namespace wifiAnalysis
                                         new StackLayout
                                         {
                                             Orientation = StackOrientation.Horizontal,
+                                            HorizontalOptions = LayoutOptions.FillAndExpand,
                                             Children =
                                             {
                                                 roomLabel,
