@@ -15,8 +15,15 @@ namespace wifiAnalysis
         Button MenuButton;
         Button ScanButton;
         ListView listView;
+        Label downloadLabel;
+        Label uploadLabel;
+        Label jitterLabel;
+        Label pingLabel;
+        Label maxDLabel;
+        Label maxULabel;
         List<RoomObject> rooms;
-        List<ScanObjectWithName> targetList;
+        List<ScanObjectWithName> targetList; 
+
         protected override async void OnAppearing()
         {
             base.OnAppearing();
@@ -49,6 +56,9 @@ namespace wifiAnalysis
             Title = "Scan Results";
             Scan = scanResults;
             SetBinding(ContentPage.TitleProperty, new Binding("Room_Name"));
+            var tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += onTapped;
+
             var header = new Label
             {
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
@@ -69,21 +79,23 @@ namespace wifiAnalysis
                 Color = Color.DarkGray,
             };
 
-            var downloadLabel = new Label
+            downloadLabel = new Label
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                 FontAttributes = FontAttributes.Bold,
                 Text = string.Format("{0} Mbps", scanResults.download.ToString()),
-                TextColor = (scanResults.download>50)? Color.Green : Color.Red
+                TextColor = (scanResults.download>25)? Color.Green : (scanResults.download>12)? Color.Orange : Color.Red
             };
+            downloadLabel.GestureRecognizers.Add(tapGestureRecognizer);
 
-            var uploadLabel = new Label
+            uploadLabel = new Label
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                 FontAttributes = FontAttributes.Bold,
                 Text = string.Format("{0} Mbps", scanResults.upload.ToString()),
-                TextColor = (scanResults.upload > 20) ? Color.Green : Color.Red
+                TextColor = (scanResults.upload>25) ? Color.Green : (scanResults.upload>12)? Color.Orange : Color.Red
             };
+            uploadLabel.GestureRecognizers.Add(tapGestureRecognizer);
 
             var hostnameLabel = new Label
             {
@@ -99,37 +111,41 @@ namespace wifiAnalysis
                 Text = scanResults.ip_address
             };
 
-            var jitterLabel = new Label
+            jitterLabel = new Label
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                 FontAttributes = FontAttributes.Bold,
                 Text = string.Format("{0} ms", scanResults.jitter.ToString()),
-                TextColor = (scanResults.jitter < 35) ? Color.Green : Color.Red
+                TextColor = (scanResults.jitter < 50) ? Color.Green : (scanResults.jitter < 100) ? Color.Orange : Color.Red
             };
+            jitterLabel.GestureRecognizers.Add(tapGestureRecognizer);
 
-            var pingLabel = new Label
+            pingLabel = new Label
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                 FontAttributes = FontAttributes.Bold,
                 Text = string.Format("{0} ms", scanResults.latency.ToString()),
-                TextColor = (scanResults.latency < 100) ? Color.Green : Color.Red
+                TextColor = (scanResults.latency < 150) ? Color.Green : (scanResults.latency < 400) ? Color.Orange : Color.Red
             };
+            pingLabel.GestureRecognizers.Add(tapGestureRecognizer);
 
-            var maxDLabel = new Label
+            maxDLabel = new Label
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                 FontAttributes = FontAttributes.Bold,
                 Text = string.Format("{0} Mbps", scanResults.maxDownload.ToString()),
-                TextColor = (scanResults.maxDownload > 50) ? Color.Green : Color.Red
+                TextColor = (scanResults.download > 25) ? Color.Green : (scanResults.download > 12) ? Color.Orange : Color.Red
             };
+            maxDLabel.GestureRecognizers.Add(tapGestureRecognizer);
 
-            var maxULabel = new Label
+            maxULabel = new Label
             {
                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                 FontAttributes = FontAttributes.Bold,
                 Text = string.Format("{0} Mbps", scanResults.maxUpload.ToString()),
-                TextColor = (scanResults.maxUpload > 50) ? Color.Green : Color.Red
+                TextColor = (scanResults.maxUpload > 25) ? Color.Green : (scanResults.maxUpload > 12) ? Color.Orange : Color.Red
             };
+            maxULabel.GestureRecognizers.Add(tapGestureRecognizer);
 
             var previousLabel = new Label
             {
@@ -311,6 +327,25 @@ namespace wifiAnalysis
                         }
                     },
                 }
+            };
+        }
+        async void onTapped(object sender, EventArgs e)
+        {
+            if (sender == downloadLabel || sender == maxDLabel)
+            { 
+                await DisplayAlert("Download Speed", "Color Cutoffs and Meanings:\nRed(Below Satisfactory) - Less than 12Mbps\nYellow(Satisfactory) - Between 12 and 25Mbps\nGreen(Exceptional) - More than 25Mbps", "Close");
+            };
+            if (sender == uploadLabel || sender == maxULabel)
+            {
+                await DisplayAlert("Upload Speed", "Color Cutoffs and Meanings:\nRed(Below Satisfactory) - Less than 12Mbps\nYellow(Satisfactory) - Between 12 and 25Mbps\nGreen(Exceptional) - More than 25Mbps", "Close");
+            };
+            if (sender == jitterLabel)
+            {
+                await DisplayAlert("Jitter", "Color Cutoffs and Meanings:\nRed(Below Satisfactory) - More than 100Mbps\nYellow(Satisfactory) - Between 100 and 50Mbps\nGreen(Exceptional) - Less than 50Mbps", "Close");
+            };
+            if (sender == pingLabel)
+            {
+                await DisplayAlert("Latency", "Color Cutoffs and Meanings:\nRed(Below Satisfactory) - More than 400Mbps\nYellow(Satisfactory) - Between 400 and 100Mbps\nGreen(Exceptional) - Less than 100Mbps", "Close");
             };
         }
 

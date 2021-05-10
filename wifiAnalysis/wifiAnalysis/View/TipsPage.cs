@@ -11,7 +11,7 @@ namespace wifiAnalysis.View
         {
             Title = "Connectivity Tips";
 
-            var dismissButton = new Button { Text = "Dismiss" };
+            var dismissButton = new Button { Text = "Close Tips" };
 
             Content = new StackLayout
             {
@@ -27,48 +27,53 @@ namespace wifiAnalysis.View
                     new Label
                     {
                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                        Text = "Download speed - refers to how many megabits of data per second the device can retrieve from a server in the form of images, videos, text, etc."
+                        Text = "Download speed - the speed of getting information from the web to your computer"
                     },
                     new Label
                     {
                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                        Text = "Upload speed - refers to how many megabits of data per second the device can send to a server (opposite of download)."
+                        Text = "Upload speed - the speed of giving information from your computer to the web"
                     },
                     new Label
                     {
                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                        Text = "Jitter - a measure of the variation in the time between data packets arriving."
+                        Text = "Jitter - the variation in times for packets to travel across the network"
                     },
                     new Label
                     {
                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                        Text = "Latency - the amount of time it takes for a data packet to transfer to its destination."
+                        Text = "Latency -  the time it takes for a data packet to travel across a network from one point on the network to another"
                     },
                     new Label
                     {
                         FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
                         FontAttributes = FontAttributes.Bold,
-                        Text = "Troubleshooting tips"
+                        Text = "Troubleshooting Tips"
                     },
                     new Label
                     {
-                        FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                        Text = "Place your wireless router in a central location in your home."
+                        FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
+                        Text = "If possible, try to place your wireless router in a central location in your home."
                     },
                     new Label
                     {
-                        FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                        Text = "Thick walls (such as brick) can impede wireless signal strength transmission."
+                        FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
+                        Text = "Thick walls (such as brick) can impede wireless signal strength transmission, reduing performance and interrupting network connectivity."
                     },
                     new Label
                     {
-                        FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                        Text = "Your modem and wireless router should be rebooted occasionally to maintain network performance."
+                        FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
+                        Text = "Reboot your wireless router and modems occasionally (at least once a week) to maintain network performance."
+                    },
+                    new Label
+                    { 
+                        FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
+                        Text = "For better stability, internet-connected devices should be far away from other electronics such as TVs, microwaves, and other connected devices."
                     },
                     new Label
                     {
-                        FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                        Text = "If you are still not achieving your advertised download/upload speeds, please contact your Internet Service Provider (ISP) for more information about your internet plan."
+                        FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
+                        Text = "If you are still not achieving your advertised download/upload speeds, contact your Internet Service Provider for more information regarding your internet plan."
                     },
                     dismissButton
 
