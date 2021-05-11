@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wi-Fi Analysis</title>
+    <meta name="viewport" content="user-scalable=no, width=device-width, maximum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <script src="//speedof.me/api/api.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<style>
+    body {background-color: dodgerblue;}
+    p {color: whitesmoke;}
+    small {color: whitesmoke;}
+    h1 {color: whitesmoke;}
+    h2 {color: whitesmoke;}
+    h3 {color: whitesmoke;}
+</style>
+<body>
+    <div id="sttgs">
+        <div style="float:left; margin-right:30px">
+            <form>
+                <input type="hidden" id="testServerEnabled" checked="checked"/>
+                <input type="hidden" id="userInfoEnabled" checked="checked"/>
+                <input type="hidden" id="latencyTestEnabled" checked="checked"/>
+                <input type="hidden" id="uploadTestEnabled" checked="checked"/>
+                <input type="hidden" id="progress.enabled" checked="checked"/>
+                <input type="hidden" id="progress.verbose" checked="checked"/>
+            </form>
+        </div>
+    </div>
+    <div class="container-sm p-3" id="prgs">
+        <p class="h1 text-center">Wi-Fi Scan</p></br>
+        <h3 class="text-center">Select Level of Accuracy and Click "Start Scan"</h3></p>
+    </div>
+    <div class="container-sm p-3" id="msg"></div>
+
+    <script type="text/javascript">
+        SomApi.account = "SOM604e985bf2b7b";  //your API Key here
+        SomApi.domainName = "klaipsc.mathcs.wilkes.edu";     //your domain or sub-domain here
+        SomApi.onTestCompleted = onTestCompleted;
+        SomApi.onError = onError;
+        SomApi.onProgress = onProgress;
+
+        var msgDiv = document.getElementById("msg");
+        var prgsDiv = document.getElementById("prgs");
+        var sttgsDiv = document.getElementById("sttgs");
+        var results;      
+        var download = [];
+        var upload = [];
+        var latency = [];
+
+        function btnStartClick(value) {
+            //set config values
+			SomApi.config.sustainTime = value;
+            SomApi.config.testServerEnabled = document.getElementById("testServerEnabled").checked;
+            SomApi.config.userInfoEnabled = document.getElementById("userInfoEnabled").checked;
+            SomApi.config.latencyTestEnabled = document.getElementById("latencyTestEnabled").checked;
+            SomApi.config.uploadTestEnabled = document.getElementById("uploadTestEnabled").checked;
+            SomApi.config.progress.enabled = document.getElementById("progress.enabled").checked;
+            SomApi.config.progress.verbose = document.getElementById("progress.verbose").checked;
+
+            sttgsDiv.innerHTML = "";
+            SomApi.startTest();
+        }
+
+        function sustainTimeChanged(value) {
+            sustainTime.value = value;
+        }
+
+        function callStart(value) {
+            btnStartClick(value);
+        }
+
+        function onTestCompleted(testResult) {
+            prgsDiv.innerHTML =  
+                "<p class=\"h1 text-center\">Wi-Fi Scan</p>" +
+                "<h2>Scan Finished</h2></br>" + 
+                "<h3>Download</br></h3>" +
+                "<p class=\"h1 text-center\">" + testResult.download + " Mbps</p>" + 
+                "<h3>Upload<br></h3>" +
+                "<p class=\"h1 text-center\">" + testResult.upload + " Mbps</p></br>" +
+                "<h2>Click \"See Results\" to see full scan results.</h2>";
+            results = testResult;
+        }
+
+        function onError(error) {
+            msgDiv.innerHTML = "Error " + error.code + ": " + error.message;
+        }
+
+        function onProgress(progress) {
+            if(progress.type == "download")
+            {
+                download.push(progress.currentSpeed);
+                prgsDiv.innerHTML = 
+                    "<p class=\"h1 text-center\">Wi-Fi Scan</p>" +
+                    "<h2>Scan in Progress</h2></br>" + 
+                    "<h3>Download</br></h3>" +
+                    "<p class=\"h1 text-center\">" + progress.currentSpeed + " Mbps</p>" + 
+                    "<h3>Upload<br></h3>" +
+                    "<p class=\"h1 text-center\">" + " please wait " + "</p>";
+            }
+            else if(progress.type == "upload")
+            {
+                upload.push(progress.currentSpeed);
+                prgsDiv.innerHTML = 
+                    "<p class=\"h1 text-center\">Wi-Fi Scan</p>" +
+                    "<h2>Scan in Progress</h2></br>" + 
+                    "<h3>Download</br></h3>" +
+                    "<p class=\"h1 text-center\">" + download[download.length - 2] + " Mbps</p>" + 
+                    "<h3>Upload<br></h3>" +
+                    "<p class=\"h1 text-center\">" + progress.currentSpeed + " Mbps</p>";
+            }
+            else
+            {
+                latency.push(progress.currentSpeed);
+                prgsDiv.innerHTML = 
+                    "<p class=\"h1 text-center\">Wi-Fi Scan</p>" +
+                    "<h2>Scan in Progress</h2></br>" + 
+                    "<h3>Download</br></h3>" +
+                    "<p class=\"h1 text-center\">" + " please wait " + " Mbps</p>" + 
+                    "<h3>Upload<br></h3>" +
+                    "<p class=\"h1 text-center\">" + " please wait " + " Mbps</p>";
+            }
+        }
+
+
+        function parseResults() {
+            return "testing123";
+        }
+
+        function parseResults2() {
+            return results;
+        }
+    </script>
+</body>
+</html>
+
